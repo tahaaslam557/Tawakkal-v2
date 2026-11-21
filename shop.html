@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop Fresh Fish &amp; Seafood Online | TAWAKKAL</title>
+  <meta name="description" content="Browse TAWAKKAL's fresh fish and seafood: Rohu, Surmai, Pomfret, Red Snapper, Prawns, fillets and more. Filter by category and price, choose your weight and order online.">
+  <meta name="theme-color" content="#041117">
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/shop.css" rel="stylesheet">
+  <link href="css/responsive.css" rel="stylesheet">
+</head>
+<body data-page="shop">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div id="site-header"></div>
+
+  <main id="main">
+    <section class="page-hero" aria-labelledby="shop-title">
+      <img class="page-hero__bg" src="assets/images/banners/fish-on-ice.jpg" alt="" width="1800" height="1200">
+      <div class="container">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb tk-breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page" data-crumb>Shop</li>
+          </ol>
+        </nav>
+        <h1 id="shop-title" data-shop-title>Shop Fresh Seafood</h1>
+        <p data-shop-sub>Choose from fresh fish, fillets, prawns and seafood specials. Select your weight and add to cart.</p>
+      </div>
+      <div class="hero__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 110" preserveAspectRatio="none"><path d="M0,64 C180,110 360,110 540,80 C720,50 900,0 1080,16 C1260,32 1350,64 1440,72 L1440,110 L0,110 Z"/></svg>
+      </div>
+    </section>
+
+    <section class="shop-wrap">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Filters -->
+          <aside class="col-lg-3 filters-col" aria-label="Product filters">
+            <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="filtersPanel" aria-labelledby="filtersLabel">
+              <div class="offcanvas-header border-bottom">
+                <h2 class="offcanvas-title h4" id="filtersLabel">Filters</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#filtersPanel" aria-label="Close filters"></button>
+              </div>
+              <div class="offcanvas-body">
+                <form class="filters w-100" data-filters onsubmit="return false">
+                  <div class="filters__group">
+                    <h3 class="filters__title"><label for="shopSearch">Search</label></h3>
+                    <div class="filters__search">
+                      <i class="bi bi-search" aria-hidden="true"></i>
+                      <input type="search" id="shopSearch" class="form-control" placeholder="Search products…" autocomplete="off">
+                    </div>
+                  </div>
+                  <fieldset class="filters__group">
+                    <legend class="filters__title">Categories</legend>
+                    <ul class="cat-list" data-cat-list></ul>
+                  </fieldset>
+                  <fieldset class="filters__group">
+                    <legend class="filters__title">Price per KG (PKR)</legend>
+                    <div class="price-inputs">
+                      <label class="visually-hidden" for="priceMin">Minimum price</label>
+                      <input type="number" class="form-control" id="priceMin" inputmode="numeric" min="0" step="50">
+                      <span>–</span>
+                      <label class="visually-hidden" for="priceMax">Maximum price</label>
+                      <input type="number" class="form-control" id="priceMax" inputmode="numeric" min="0" step="50">
+                    </div>
+                    <label class="visually-hidden" for="priceRange">Maximum price slider</label>
+                    <input type="range" class="form-range mt-3" id="priceRange" step="50">
+                    <div class="price-presets" data-price-presets></div>
+                  </fieldset>
+                  <fieldset class="filters__group">
+                    <legend class="filters__title">Availability</legend>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" role="switch" id="inStockOnly">
+                      <label class="form-check-label fw-semibold" for="inStockOnly">In stock only</label>
+                    </div>
+                  </fieldset>
+                  <div class="d-grid gap-2 mt-2">
+                    <button type="button" class="btn btn-tk-ghost" data-reset-filters><i class="bi bi-arrow-counterclockwise"></i> Reset filters</button>
+                    <button type="button" class="btn btn-tk d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#filtersPanel">Show <span data-result-count-btn>0</span> results</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Products -->
+          <div class="col-lg-9">
+            <div class="shop-toolbar">
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-tk-ghost filter-btn d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtersPanel" aria-controls="filtersPanel"><i class="bi bi-sliders"></i> Filters</button>
+                <p class="shop-toolbar__count mb-0" aria-live="polite" data-result-count>Showing products</p>
+              </div>
+              <div class="shop-toolbar__right">
+                <label class="visually-hidden" for="sortBy">Sort products</label>
+                <select class="form-select" id="sortBy">
+                  <option value="featured">Sort: Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="name-asc">Name: A to Z</option>
+                  <option value="name-desc">Name: Z to A</option>
+                  <option value="discount">Biggest Savings</option>
+                </select>
+                <div class="view-toggle" role="group" aria-label="Product view">
+                  <button type="button" class="is-active" data-view="grid" aria-pressed="true" aria-label="Grid view"><i class="bi bi-grid-3x3-gap-fill"></i></button>
+                  <button type="button" data-view="list" aria-pressed="false" aria-label="List view"><i class="bi bi-view-list"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="active-filters" data-active-filters></div>
+            <div class="notice mb-4" role="note">
+              <i class="bi bi-info-circle" aria-hidden="true"></i>
+              <span><strong>Demo prices &amp; stock:</strong> prices are sample prices per KG and availability is demonstration data.</span>
+            </div>
+            <div class="row g-4 products-grid" data-products-grid></div>
+            <div class="shop-empty text-center p-5 mt-2" data-shop-empty hidden>
+              <div class="tk-empty__icon"><i class="bi bi-search"></i></div>
+              <h2 class="h3">No products found</h2>
+              <p class="text-secondary">Try a different search term, widen the price range or clear your filters.</p>
+              <button type="button" class="btn btn-tk" data-reset-filters>Clear all filters</button>
+            </div>
+            <div class="load-more-wrap" data-load-more-wrap hidden>
+              <small data-load-status></small>
+              <div class="load-progress"><span data-load-progress></span></div>
+              <button type="button" class="btn btn-tk-dark" data-load-more>Load More Products</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>

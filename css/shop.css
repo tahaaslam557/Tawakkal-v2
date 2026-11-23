@@ -56,7 +56,10 @@
 .products-grid.is-list .product-card__media { width: 38%; max-width: 300px; flex: none; aspect-ratio: auto; margin: 0.6rem; }
 .products-grid.is-list .product-card__body { padding: 1.5rem 1.6rem 1.5rem 0.6rem; }
 .products-grid.is-list .product-card__desc { -webkit-line-clamp: 3; font-size: 0.95rem; }
-.products-grid.is-list .weight-pills { max-width: 320px; }
+.products-grid.is-list .weight-pills, .products-grid.is-list .card-custom { max-width: 380px; }
+.products-grid.is-list .product-card__foot { grid-template-columns: 1fr auto; align-items: center; }
+.products-grid.is-list .product-card__calc { margin-left: 0; width: 100%; }
+.products-grid.is-list .product-card__actions .btn-tk { flex: none; padding-inline: 1.4rem; }
 .products-grid.is-list .product-card__title { font-size: 1.6rem; }
 
 .shop-empty { background: var(--tk-white); border-radius: var(--tk-radius-lg); border: 1px dashed var(--tk-line); }

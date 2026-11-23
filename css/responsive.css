@@ -24,7 +24,8 @@
   .why__badge { left: 0; }
   .why__img-sub { right: 0; }
   .process__line { display: none; }
-  .filters { border: 0; border-radius: 0; padding: 0; }
+  .filters { border: 0; border-radius: 0; padding: 0; background: transparent; }
+  #filtersPanel { background: var(--tk-white); }
   .pd-gallery { position: static; }
   .summary-card { position: static; }
   .about-stack { max-width: 520px; margin: 0 auto 2rem; }
@@ -55,6 +56,8 @@
   .products-grid.is-list .product-card { flex-direction: column; }
   .products-grid.is-list .product-card__media { width: auto; max-width: none; aspect-ratio: 1 / 0.86; }
   .products-grid.is-list .product-card__body { padding: 1.1rem 1.25rem 1.3rem; }
+  .products-grid.is-list .product-card__foot { grid-template-columns: 1fr; }
+  .products-grid.is-list .product-card__actions .btn-tk { flex: 1; }
   .tk-footer { padding-top: 4rem; }
   .tk-footer__bottom { flex-direction: column; }
   .pd-weights { grid-template-columns: repeat(2, 1fr); }

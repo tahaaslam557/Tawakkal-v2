@@ -151,7 +151,7 @@ When an endpoint is set, the form sends JSON with `fetch()`. A `2xx` response co
 
 - Sticky, responsive navbar with an off-canvas mobile menu, category dropdown, search, cart count and Shop Now button
 - Live product search (popup and shop page), category and price filters, in-stock filter, 6 sort options, grid/list toggle, Load More
-- Per-KG pricing with weight pills, custom weight and quantity; totals update instantly
+- Per-KG pricing with weight pills and a custom-weight option on every product card (quantity on the product page and in the cart); totals update instantly
 - Cart drawer and cart page: add/remove, quantity, change weight (lines merge when weights match), clear with undo, free-delivery progress bar
 - Cart saved in `localStorage` across pages and synced between browser tabs
 - Checkout with field validation (name, phone, email, address, city, area, terms), payment methods from config, totals, and an honest demo confirmation

@@ -394,11 +394,15 @@
       : `<span class="tk-stock tk-stock--out"><i class="bi bi-circle-fill"></i> Currently unavailable</span>`;
   }
 
+  let cardSeq = 0;
   function productCard(p, opts = {}) {
     const defW = 1;
     const disc = discountPct(p);
     const cat = getCategory(p.categories[0]);
     const headingTag = opts.headingTag || "h3";
+    const W = CFG.weights;
+    const dis = p.inStock ? "" : " disabled";
+    const uid = p.id + "-" + ++cardSeq;
     return `
       <article class="product-card${p.inStock ? "" : " is-out"}" data-product-card data-id="${p.id}" data-weight="${defW}">
         <div class="product-card__media">
@@ -422,43 +426,95 @@
             ${priceBlock(p)}
             <span class="demo-tag" title="Sample price for demonstration">Demo price</span>
           </div>
-          <div class="weight-pills" role="group" aria-label="Choose weight for ${esc(p.name)}">
-            ${CFG.weights.options
-              .map((w) => `<button type="button" class="weight-pill${w === defW ? " is-active" : ""}" data-weight-option="${w}" aria-pressed="${w === defW}"${p.inStock ? "" : " disabled"}>${formatWeight(w)}</button>`)
+          <div class="weight-pills${W.allowCustom ? " weight-pills--custom" : ""}" role="group" aria-label="Choose weight for ${esc(p.name)}">
+            ${W.options
+              .map((w) => `<button type="button" class="weight-pill${w === defW ? " is-active" : ""}" data-weight-option="${w}" aria-pressed="${w === defW}"${dis}>${formatWeight(w)}</button>`)
               .join("")}
+            ${W.allowCustom ? `<button type="button" class="weight-pill" data-weight-custom aria-pressed="false"${dis}>Custom</button>` : ""}
           </div>
+          ${
+            W.allowCustom
+              ? `<div class="card-custom" data-card-custom-wrap hidden>
+                  <label class="visually-hidden" for="cw-${uid}">Custom weight in KG for ${esc(p.name)}</label>
+                  <div class="card-custom__field">
+                    <input type="number" id="cw-${uid}" class="form-control" data-card-custom min="${W.customMin}" max="${W.customMax}" step="${W.customStep}" value="1.5" inputmode="decimal">
+                    <span>KG</span>
+                  </div>
+                  <small class="card-custom__help" data-card-custom-help>${formatWeight(W.customMin)} – ${formatWeight(W.customMax)}, steps of ${formatWeight(W.customStep)}</small>
+                </div>`
+              : ""
+          }
           <div class="product-card__foot">
-            <div class="product-card__total"><small>Total</small><strong data-card-total>${money(p.pricePerKg * defW)}</strong></div>
-            <button type="button" class="btn btn-tk btn-tk--sm" data-add-to-cart${p.inStock ? "" : " disabled"}>
-              <i class="bi bi-bag-plus"></i> ${p.inStock ? "Add to Cart" : "Unavailable"}
-            </button>
+            <div class="product-card__total">
+              <small>Total</small>
+              <strong data-card-total>${money(p.pricePerKg * defW)}</strong>
+              <span class="product-card__calc" data-card-calc>for ${formatWeight(defW)}</span>
+            </div>
+            <div class="product-card__actions">
+              <button type="button" class="btn btn-tk btn-tk--sm" data-add-to-cart${dis}>
+                <i class="bi bi-bag-plus"></i> ${p.inStock ? "Add to Cart" : "Unavailable"}
+              </button>
+            </div>
           </div>
         </div>
       </article>`;
   }
 
+  /** Validate the custom-weight input on a card; returns the weight in KG or null. */
+  function cardCustomWeight(card) {
+    const W = CFG.weights;
+    const input = qs("[data-card-custom]", card);
+    const v = parseFloat(input.value);
+    const ok = !isNaN(v) && v >= W.customMin && v <= W.customMax && Math.abs(v / W.customStep - Math.round(v / W.customStep)) < 1e-6;
+    input.classList.toggle("is-invalid", !ok);
+    qs("[data-card-custom-help]", card).classList.toggle("is-error", !ok);
+    return ok ? v : null;
+  }
+
+  function updateCard(card) {
+    const p = getProduct(card.dataset.id);
+    const w = parseFloat(card.dataset.weight);
+    qs("[data-card-total]", card).textContent = money(Math.round(p.pricePerKg * w));
+    qs("[data-card-calc]", card).textContent = `for ${formatWeight(w)}`;
+  }
+
+  function setCardWeight(card, activeBtn, weight) {
+    qsa("[data-weight-option], [data-weight-custom]", card).forEach((b) => {
+      const on = b === activeBtn;
+      b.classList.toggle("is-active", on);
+      b.setAttribute("aria-pressed", on);
+    });
+    const isCustom = activeBtn.hasAttribute("data-weight-custom");
+    const wrap = qs("[data-card-custom-wrap]", card);
+    if (wrap) wrap.hidden = !isCustom;
+    card.dataset.custom = isCustom ? "1" : "";
+    if (weight) card.dataset.weight = weight;
+    updateCard(card);
+  }
+
   function bindProductCards() {
     document.addEventListener("click", (e) => {
+      const card = e.target.closest("[data-product-card]");
+      if (!card) return;
+
       const pill = e.target.closest("[data-weight-option]");
-      if (pill) {
-        const card = pill.closest("[data-product-card]");
-        if (!card) return;
-        const w = parseFloat(pill.dataset.weightOption);
-        card.dataset.weight = w;
-        qsa("[data-weight-option]", card).forEach((b) => {
-          const on = b === pill;
-          b.classList.toggle("is-active", on);
-          b.setAttribute("aria-pressed", on);
-        });
-        const p = getProduct(card.dataset.id);
-        qs("[data-card-total]", card).textContent = money(p.pricePerKg * w);
+      if (pill) return setCardWeight(card, pill, parseFloat(pill.dataset.weightOption));
+
+      const custom = e.target.closest("[data-weight-custom]");
+      if (custom) {
+        setCardWeight(card, custom, cardCustomWeight(card));
+        qs("[data-card-custom]", card).focus();
         return;
       }
+
       const add = e.target.closest("[data-add-to-cart]");
       if (add) {
-        const card = add.closest("[data-product-card]");
-        if (!card) return;
         const p = getProduct(card.dataset.id);
+        if (card.dataset.custom && !cardCustomWeight(card)) {
+          qs("[data-card-custom]", card).focus();
+          toast("Please enter a valid custom weight.", { type: "error" });
+          return;
+        }
         const w = parseFloat(card.dataset.weight);
         if (Cart.add(p.id, w, 1)) {
           add.classList.add("is-added");
@@ -467,6 +523,18 @@
         }
       }
     });
+
+    document.addEventListener("input", (e) => {
+      const input = e.target.closest("[data-card-custom]");
+      if (!input) return;
+      const card = input.closest("[data-product-card]");
+      const v = cardCustomWeight(card);
+      if (v) {
+        card.dataset.weight = v;
+        updateCard(card);
+      }
+    });
+
   }
 
   /* ----------------------------------------------------------------------
